@@ -11,26 +11,21 @@ import bleach
 
 app = Flask(__name__)
 
-# ===== CLASSIFICATION: false_positive_dead_code =====
 def validate_email(email):
-    # Overly simplistic email validation that could allow some invalid formats
     pattern = r'.+@.+\..+'
     return re.match(pattern, email) is not None
-# Good to fix vulnerability 4: Weak password hashing
 def hash_password(password):
-    # Using base64 instead of proper password hashing
     return base64.b64encode(password.encode()).decode()
     @app.route('/register', methods=['POST'])
+
 def register():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
     email = request.form.get('email', '')
 
-    # Using the vulnerable validation function
     if not validate_email(email):
         return "Invalid email format"
 
-    # Using the vulnerable password hashing
     hashed_password = hash_password(password)
 
     conn = sqlite3.connect('users.db')
